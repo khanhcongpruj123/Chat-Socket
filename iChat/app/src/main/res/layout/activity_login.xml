@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <RelativeLayout
+        android:background="#9C000000"
+        android:elevation="4dp"
+        android:visibility="gone"
+        android:id="@+id/loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:padding="10dp"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_gravity="center"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:text="@string/app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/host"
+            android:hint="@string/host"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:inputType="number"
+            android:id="@+id/port"
+            android:hint="@string/port"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/username"
+            android:hint="@string/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:scaleType="centerCrop"
+            android:id="@+id/img_avatar"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:src="@drawable/ic_baseline_image_24"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+        <TextView
+            android:layout_gravity="center"
+            android:text="@string/avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_login"
+        android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center" />
+</RelativeLayout>
