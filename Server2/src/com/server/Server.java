@@ -5,8 +5,6 @@ import com.messages.Message;
 import com.messages.MessageType;
 import com.messages.Status;
 import com.messages.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -15,15 +13,16 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Logger;
 
 public class Server {
 
     /* Setting up variables */
     private static final int PORT = 9001;
-    private static final HashMap<String, User> names = new HashMap<>();
-    private static HashSet<ObjectOutputStream> writers = new HashSet<>();
-    private static ArrayList<User> users = new ArrayList<>();
-    static Logger logger = LoggerFactory.getLogger(Server.class);
+    private static final HashMap<String, User> names = new HashMap();
+    private static HashSet<ObjectOutputStream> writers = new HashSet();
+    private static ArrayList<User> users = new ArrayList();
+    static Logger logger = Logger.getLogger("AppLog");
 
     public static void main(String[] args) throws Exception {
         logger.info("The chat server is running.");
@@ -44,7 +43,7 @@ public class Server {
     private static class Handler extends Thread {
         private String name;
         private Socket socket;
-        private Logger logger = LoggerFactory.getLogger(Handler.class);
+        private Logger logger = Logger.getLogger("AppLog");
         private User user;
         private ObjectInputStream input;
         private OutputStream os;
@@ -91,18 +90,21 @@ public class Server {
                     }
                 }
             } catch (SocketException socketException) {
-                logger.error("Socket Exception for user " + name);
+                logger.info("Socket Exception for user " + name);
+                socketException.printStackTrace();
             } catch (DuplicateUsernameException duplicateException){
-                logger.error("Duplicate Username : " + name);
+                logger.info("Duplicate Username : " + name);
+                duplicateException.printStackTrace();
             } catch (Exception e){
-                logger.error("Exception in run() method for user: " + name, e);
+                logger.info("Exception in run() method for user: " + name);
+                e.printStackTrace();
             } finally {
                 closeConnections();
             }
         }
 
         private Message changeStatus(Message inputmsg) throws IOException {
-            logger.debug(inputmsg.getName() + " has changed status to  " + inputmsg.getStatus());
+            logger.info(inputmsg.getName() + " has changed status to  " + inputmsg.getStatus());
             Message msg = new Message();
             msg.setName(user.getName());
             msg.setType(MessageType.STATUS);
@@ -127,7 +129,7 @@ public class Server {
 
                 logger.info(name + " has been added to the list");
             } else {
-                logger.error(firstMessage.getName() + " is already connected");
+                logger.info(firstMessage.getName() + " is already connected");
                 throw new DuplicateUsernameException(firstMessage.getName() + " is already connected");
             }
         }
@@ -144,14 +146,14 @@ public class Server {
 
 
         private Message removeFromList() throws IOException {
-            logger.debug("removeFromList() method Enter");
+            logger.info("removeFromList() method Enter");
             Message msg = new Message();
             msg.setMsg("has left the chat.");
             msg.setType(MessageType.DISCONNECTED);
             msg.setName("SERVER");
             msg.setUserlist(names);
             write(msg);
-            logger.debug("removeFromList() method Exit");
+            logger.info("removeFromList() method Exit");
             return msg;
         }
 
@@ -184,7 +186,7 @@ public class Server {
          * Once a user has been disconnected, we close the open connections and remove the writers
          */
         private synchronized void closeConnections()  {
-            logger.debug("closeConnections() method Enter");
+            logger.info("closeConnections() method Enter");
             logger.info("HashMap names:" + names.size() + " writers:" + writers.size() + " usersList size:" + users.size());
             if (name != null) {
                 names.remove(name);
@@ -225,7 +227,7 @@ public class Server {
                 e.printStackTrace();
             }
             logger.info("HashMap names:" + names.size() + " writers:" + writers.size() + " usersList size:" + users.size());
-            logger.debug("closeConnections() method Exit");
+            logger.info("closeConnections() method Exit");
         }
     }
 }

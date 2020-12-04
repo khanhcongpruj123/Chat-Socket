@@ -31,7 +31,7 @@ public class ChatThread extends Thread {
     private String username;
     private byte[] avatar;
 
-    private ChatListener chatListener;
+    private ArrayList<ChatListener> listeners = new ArrayList<>();
     private ArrayList<Message> listMessage;
 
     public static ChatThread instance;
@@ -74,8 +74,12 @@ public class ChatThread extends Thread {
         start();
     }
 
-    public void setChatUpdateListener(ChatListener listener) {
-        this.chatListener = listener;
+//    public void setChatUpdateListener(ChatListener listener) {
+//        this.chatListener = listener;
+//    }
+
+    public void addChatUpdateListener(ChatListener listener) {
+        this.listeners.add(listener);
     }
 
     private void connect() {
@@ -83,7 +87,8 @@ public class ChatThread extends Thread {
             Message connectedMessage = new Message();
             connectedMessage.setName(username);
             connectedMessage.setPicture(avatar);
-            connectedMessage.setMsg(HAS_CONNECTED);
+            connectedMessage.setType(MessageType.USER);
+            connectedMessage.setMsg(username + " " + HAS_CONNECTED);
             connectedMessage.setStatus(Status.ONLINE);
             oos.writeObject(connectedMessage);
         } catch (IOException e) {
@@ -132,7 +137,7 @@ public class ChatThread extends Thread {
                         case IMAGE:
                         case USER:
                             listMessage.add(mess);
-                            if (chatListener != null) chatListener.onUpdate(listMessage);
+                            callback(listMessage);
                             break;
                     }
                 }
@@ -142,5 +147,11 @@ public class ChatThread extends Thread {
             e.printStackTrace();
             Log.d("AppLog", "Co loi xay ra!");
         }
+    }
+
+    public void callback(List<Message> listMessage) {
+        listeners.forEach(listener -> {
+            listener.onUpdate(listMessage);
+        });
     }
 }

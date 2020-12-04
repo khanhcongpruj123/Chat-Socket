@@ -11,7 +11,7 @@ public class MessageController implements ChatListener {
 
     public MessageController(MessageView messageView) {
         this.messageView = messageView;
-        ChatThread.getInstance().setChatUpdateListener(this);
+        ChatThread.getInstance().addChatUpdateListener(this);
     }
 
     public void sendMessage(Message mess) {

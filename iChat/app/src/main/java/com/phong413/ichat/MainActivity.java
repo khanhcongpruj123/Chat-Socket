@@ -18,5 +18,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.pager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
+        binding.tabLayout.setupWithViewPager(binding.pager);
     }
 }
