@@ -6,6 +6,7 @@ import android.util.Log;
 import com.messages.Message;
 import com.messages.MessageType;
 import com.messages.Status;
+import com.messages.User;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,6 +61,16 @@ public class ChatThread extends Thread {
         this.avatar = avatar;
     }
 
+    private List<User> listContact;
+
+    public List<User> getListContact() {
+        return listContact;
+    }
+
+    public ArrayList<Message> getListMessage() {
+        return listMessage;
+    }
+
     private ChatThread(String host, int port) {
         this.host = host;
         this.port = port;
@@ -87,7 +98,7 @@ public class ChatThread extends Thread {
             Message connectedMessage = new Message();
             connectedMessage.setName(username);
             connectedMessage.setPicture(avatar);
-            connectedMessage.setType(MessageType.USER);
+            connectedMessage.setType(MessageType.CONNECTED);
             connectedMessage.setMsg(username + " " + HAS_CONNECTED);
             connectedMessage.setStatus(Status.ONLINE);
             oos.writeObject(connectedMessage);
@@ -134,8 +145,11 @@ public class ChatThread extends Thread {
                 Message mess = (Message) input.readObject();
                 if (mess != null) {
                     switch (mess.getType()) {
+                        case DISCONNECTED:
                         case IMAGE:
+                        case CONNECTED:
                         case USER:
+                            listContact = mess.getUsers();
                             listMessage.add(mess);
                             callback(listMessage);
                             break;
@@ -150,8 +164,23 @@ public class ChatThread extends Thread {
     }
 
     public void callback(List<Message> listMessage) {
+        Log.d("AppLog","Cap nhat tin nhan va danh sach contact");
         listeners.forEach(listener -> {
             listener.onUpdate(listMessage);
         });
+    }
+
+    public void disconnect() {
+        try {
+            if (socket != null) {
+                outputStream.close();
+                is.close();
+                oos.close();
+                input.close();
+                socket.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

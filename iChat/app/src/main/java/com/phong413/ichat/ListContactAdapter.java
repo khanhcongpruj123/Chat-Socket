@@ -70,6 +70,9 @@ public class ListContactAdapter extends RecyclerView.Adapter<ListContactAdapter.
     }
 
     public void updateListContact(List<User> list) {
+
+        if (list == null) return;
+
         this.list.clear();
         this.list.addAll(list);
         notifyDataSetChanged();

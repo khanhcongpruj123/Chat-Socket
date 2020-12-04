@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,11 +46,16 @@ public class ContactFragment extends Fragment implements ContactView {
         ListContactAdapter adapter = new ListContactAdapter();
         binding.listContact.setAdapter(adapter);
         binding.listContact.addItemDecoration(new DividerItemDecoration(requireContext(), RecyclerView.HORIZONTAL));
+
+        adapter.updateListContact(ChatThread.getInstance().getListContact());
     }
 
     @Override
     public void updateListContact(List<User> listContact) {
+        Log.d("AppLog", "Cap nhat danh sach nguoi tro chuyen");
         ListContactAdapter adapter = (ListContactAdapter) binding.listContact.getAdapter();
-        adapter.updateListContact(listContact);
+        binding.getRoot().post(() -> {
+            adapter.updateListContact(listContact);
+        });
     }
 }

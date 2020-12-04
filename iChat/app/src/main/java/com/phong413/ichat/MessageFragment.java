@@ -57,6 +57,9 @@ public class MessageFragment extends Fragment implements MessageView {
 
         binding.btnSend.setOnClickListener(v -> {
             String messStr = binding.inputMess.getText().toString();
+
+            if (messStr == null || messStr.isEmpty()) return;
+
             Message mess = new MessageBuilder()
                     .setMessageType(MessageType.USER)
                     .setMessage(messStr)
@@ -71,6 +74,8 @@ public class MessageFragment extends Fragment implements MessageView {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Chọn ảnh đại diện"), PICK_IMAGE);
         });
+
+        adapter.updateListMessage(ChatThread.getInstance().getListMessage());
     }
 
     @Override

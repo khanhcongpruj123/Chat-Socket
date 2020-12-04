@@ -42,9 +42,11 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
                 Bitmap avatar = ((BitmapDrawable) binding.imgAvatar.getDrawable()).getBitmap();
 
                 loginController.login(host, port, avatar, username);
+                finish();
 
             } catch (Exception ex) {
                 ex.printStackTrace();
+                showError("Đã có lỗi xảy ra!");
             }
         });
 

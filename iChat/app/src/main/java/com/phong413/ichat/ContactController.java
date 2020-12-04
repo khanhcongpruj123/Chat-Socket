@@ -1,9 +1,12 @@
 package com.phong413.ichat;
 
+import android.util.Log;
+
 import com.messages.Message;
 import com.messages.User;
 
 import java.util.List;
+import java.util.Timer;
 
 public class ContactController implements ChatListener{
 
@@ -16,10 +19,11 @@ public class ContactController implements ChatListener{
 
     @Override
     public void onUpdate(List<Message> listMessage) {
-
+        Log.d("AppLog", "Cap nhat danh sach contact");
         if (listMessage != null && !listMessage.isEmpty()) {
             Message mess = listMessage.get(listMessage.size() - 1);
-            updateListContact(mess.getUserlist());
+            Log.d("AppLog", "Danh sach contact: " + mess.getUsers().size());
+            updateListContact(mess.getUsers());
         }
     }
 

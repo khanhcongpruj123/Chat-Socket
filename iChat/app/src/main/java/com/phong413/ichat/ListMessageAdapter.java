@@ -91,8 +91,10 @@ public class ListMessageAdapter extends RecyclerView.Adapter<ListMessageAdapter.
                 if (imgMsg != null) {
                     Bitmap b = BitmapUtils.bitMapFromByte(imgMsg);
                     binding.image.setImageBitmap(b);
+                    binding.image.setVisibility(View.VISIBLE);
                 } else {
                     binding.image.setImageBitmap(null);
+                    binding.image.setVisibility(View.GONE);
                 }
             });
         }
@@ -117,8 +119,10 @@ public class ListMessageAdapter extends RecyclerView.Adapter<ListMessageAdapter.
                 if (imgMsg != null) {
                     Bitmap b = BitmapUtils.bitMapFromByte(imgMsg);
                     binding.image.setImageBitmap(b);
+                    binding.image.setVisibility(View.VISIBLE);
                 } else {
                     binding.image.setImageBitmap(null);
+                    binding.image.setVisibility(View.GONE);
                 }
             });
         }

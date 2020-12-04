@@ -66,7 +66,7 @@ public class Server {
                 checkDuplicateUsername(firstMessage);
                 writers.add(output);
                 sendNotification(firstMessage);
-                addToList();
+                addToList(firstMessage.getName());
 
                 while (socket.isConnected()) {
                     Message inputmsg = (Message) input.readObject();
@@ -81,7 +81,7 @@ public class Server {
                                 write(inputmsg);
                                 break;
                             case CONNECTED:
-                                addToList();
+                                addToList(inputmsg.getName());
                                 break;
                             case STATUS:
                                 changeStatus(inputmsg);
@@ -145,10 +145,10 @@ public class Server {
         }
 
 
-        private Message removeFromList() throws IOException {
+        private Message removeFromList(String name) throws IOException {
             logger.info("removeFromList() method Enter");
             Message msg = new Message();
-            msg.setMsg("has left the chat.");
+            msg.setMsg(name + " đã rời phòng chat");
             msg.setType(MessageType.DISCONNECTED);
             msg.setName("SERVER");
             msg.setUserlist(names);
@@ -160,9 +160,9 @@ public class Server {
         /*
          * For displaying that a user has joined the server
          */
-        private Message addToList() throws IOException {
+        private Message addToList(String name) throws IOException {
             Message msg = new Message();
-            msg.setMsg("Welcome, You have now joined the server! Enjoy chatting!");
+            msg.setMsg("Chào mừng " + name + " đến với phòng chat!");
             msg.setType(MessageType.CONNECTED);
             msg.setName("SERVER");
             write(msg);
@@ -222,7 +222,7 @@ public class Server {
                 }
             }
             try {
-                removeFromList();
+                removeFromList(user.getName());
             } catch (Exception e) {
                 e.printStackTrace();
             }

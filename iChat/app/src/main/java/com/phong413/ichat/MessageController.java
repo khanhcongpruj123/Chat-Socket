@@ -1,5 +1,7 @@
 package com.phong413.ichat;
 
+import android.util.Log;
+
 import com.messages.Message;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class MessageController implements ChatListener {
 
     @Override
     public void onUpdate(List<Message> listMessage) {
+        Log.d("AppLog", "Cap nhat danh sach tin nhan");
         messageView.updateMessage(listMessage);
     }
 }
