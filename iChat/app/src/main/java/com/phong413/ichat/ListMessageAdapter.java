@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.messages.Message;
 import com.phong413.ichat.databinding.ItemMessLeftBinding;
 import com.phong413.ichat.databinding.ItemMessRightBinding;
+import com.phong413.ichat.databinding.ItemMessageServerBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,8 @@ public class ListMessageAdapter extends RecyclerView.Adapter<ListMessageAdapter.
 
     private static final int TYPE_USER = 1;
     private static final int TYPE_OTHER = 2;
+    private static final int TYPE_SERVER = 3;
+
 
     private ArrayList<Message> listMessage = new ArrayList<>();
 
@@ -40,6 +43,9 @@ public class ListMessageAdapter extends RecyclerView.Adapter<ListMessageAdapter.
         if (viewType == TYPE_USER) {
             ItemMessRightBinding binding = ItemMessRightBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
             return new MessageRightHolder(binding);
+        } if (viewType == TYPE_SERVER) {
+            ItemMessageServerBinding binding = ItemMessageServerBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+            return new MessageServerHolder(binding);
         } else {
             ItemMessLeftBinding binding = ItemMessLeftBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
             return new MessageLeftHolder(binding);
@@ -65,7 +71,7 @@ public class ListMessageAdapter extends RecyclerView.Adapter<ListMessageAdapter.
     @Override
     public int getItemViewType(int position) {
         if (listMessage.get(position).getUser() == null) {
-            return TYPE_OTHER;
+            return TYPE_SERVER;
         }
         if (listMessage.get(position).getUser().getUsername().equals(ChatThread.getInstance().getUser().getUsername())) {
             return TYPE_USER;
@@ -119,6 +125,19 @@ public class ListMessageAdapter extends RecyclerView.Adapter<ListMessageAdapter.
                     context.startActivity(intent);
                 });
             });
+        }
+    }
+
+    class MessageServerHolder extends MessageHolder {
+        private ItemMessageServerBinding binding;
+
+        public MessageServerHolder(@NonNull ItemMessageServerBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+        public void bind(Message m) {
+            binding.message.setText(m.getMessage());
         }
     }
 
