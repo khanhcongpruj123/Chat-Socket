@@ -29,36 +29,29 @@ public class ChatThread extends Thread {
     private InputStream is;
     private ObjectInputStream input;
 
-    private String username;
-    private byte[] avatar;
+    private User user;
 
     private ArrayList<ChatListener> listeners = new ArrayList<>();
     private ArrayList<Message> listMessage;
 
+    private Account account;
+
     public static ChatThread instance;
 
-    public static void initialize(String host, int port) {
-        instance = new ChatThread(host, port);
+    public static void initialize(String host, int port, Account a) {
+        instance = new ChatThread(host, port, a);
     }
 
-    public static ChatThread getInstance() {
+    public Account getAccount() {
+        return account;
+    }
+
+    public synchronized static ChatThread getInstance() {
         return instance;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public byte[] getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(byte[] avatar) {
-        this.avatar = avatar;
+    public String getHost() {
+        return host;
     }
 
     private List<User> listContact;
@@ -71,19 +64,25 @@ public class ChatThread extends Thread {
         return listMessage;
     }
 
-    private ChatThread(String host, int port) {
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    private ChatThread(String host, int port, Account a) {
         this.host = host;
         this.port = port;
+        this.account = a;
+        user = new User();
+        user.setAvatarUrl(a.getAvatarUrl());
+        user.setUsername(a.getUsername());
 
         listMessage = new ArrayList<>();
     }
 
-    public void connect(String username, byte[] avatar) {
-        this.username = username;
-        this.avatar = avatar;
-
-        start();
-    }
 
 //    public void setChatUpdateListener(ChatListener listener) {
 //        this.chatListener = listener;
@@ -93,18 +92,12 @@ public class ChatThread extends Thread {
         this.listeners.add(listener);
     }
 
-    private void connect() {
-        try {
-            Message connectedMessage = new Message();
-            connectedMessage.setName(username);
-            connectedMessage.setPicture(avatar);
-            connectedMessage.setType(MessageType.CONNECTED);
-            connectedMessage.setMsg(username + " " + HAS_CONNECTED);
-            connectedMessage.setStatus(Status.ONLINE);
-            oos.writeObject(connectedMessage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+    ChatConnectListener chatConnectListener;
+
+    public void connect(ChatConnectListener listener) {
+        chatConnectListener = listener;
+        start();
     }
 
     synchronized void sendMessage(String mess) {
@@ -112,9 +105,8 @@ public class ChatThread extends Thread {
             Message message = new Message();
             message.setStatus(Status.ONLINE);
             message.setType(MessageType.USER);
-            message.setPicture(avatar);
-            message.setMsg(mess);
-            message.setName(username);
+            message.setUser(user);
+            message.setMessage(mess);
             oos.writeObject(message);
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,14 +124,20 @@ public class ChatThread extends Thread {
     @Override
     public void run() {
         try {
+            Log.d("AppLog", "Dang ket noi");
             socket = new Socket(host, port);
             outputStream = socket.getOutputStream();
             oos = new ObjectOutputStream(outputStream);
             is = socket.getInputStream();
             input = new ObjectInputStream(is);
-            Log.d("AppLog", "Da ket noi!");
+            Log.d("AppLog", "Socket da ket noi!");
 
-            connect();
+            sendMessage(
+                    new MessageBuilder()
+                            .setMessageType(MessageType.USER)
+                            .setStatus(Status.ONLINE)
+                            .build()
+            );
 
             while (socket.isConnected()) {
                 Message mess = (Message) input.readObject();
@@ -147,11 +145,21 @@ public class ChatThread extends Thread {
                     switch (mess.getType()) {
                         case DISCONNECTED:
                         case IMAGE:
-                        case CONNECTED:
+                        case VOICE:
                         case USER:
-                            listContact = mess.getUsers();
+                        case NOTIFICATION:
+                        case SERVER:
+                            listContact = mess.getListUser();
                             listMessage.add(mess);
                             callback(listMessage);
+                            break;
+                        case CONNECTED:
+                            listContact = mess.getListUser();
+                            if (mess.getListMess() != null) listMessage.addAll(0, mess.getListMess());
+                            listMessage.add(mess);
+                            callback(listMessage);
+                            chatConnectListener.onConnected();
+                            Log.d("AppLog", "Chat da ket noi!");
                             break;
                     }
                 }

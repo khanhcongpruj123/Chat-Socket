@@ -11,10 +11,13 @@
     <string name="login_failed">"Login failed"</string>
     <string name="host">Địa chỉ IP máy chủ</string>
     <string name="port">Cổng chat</string>
-    <string name="username">Tên</string>
+    <string name="username">Tên đăng nhập</string>
     <string name="avatar">Ảnh đại diện</string>
     <string name="login">Đăng nhập</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="logout">Thoát</string>
+    <string name="password">Mật khẩu</string>
+    <string name="register">Tạo tài khoản</string>
+    <string name="confirm_password">Xác nhận mật khẩu</string>
 </resources>

@@ -3,59 +3,38 @@ package com.messages;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Message implements Serializable {
 
     public static final long serialVersionUID = 1L;
 
-    private String name;
-    private MessageType type;
-    private String msg;
-    private int count;
-    private ArrayList<User> list;
-    private ArrayList<User> users;
+    private MessageType type = MessageType.USER;
+    private Status status = Status.ONLINE;
 
-    private Status status;
-    private byte[] voiceMsg;
+    private User user;
+    private String message;
+    private String imageUrl;
+    private String voiceUrl;
 
-    public byte[] getVoiceMsg() {
-        return voiceMsg;
-    }
+    private ArrayList<User> listUser;
+    private List<Message> listMess;
 
-    public byte[] getPicture() {
-        return picture;
-    }
-
-    private byte[] picture;
-
-    private byte[] imgMsg;
-
-    public byte[] getImgMsg() {
-        return imgMsg;
-    }
-
-    public void setImgMsg(byte[] imgMsg) {
-        this.imgMsg = imgMsg;
+    public Message(MessageType type, Status status, User user, String message, String imageUrl, String voiceUrl, ArrayList<User> listUser) {
+        this.type = type;
+        this.status = status;
+        this.user = user;
+        this.message = message;
+        this.imageUrl = imageUrl;
+        this.voiceUrl = voiceUrl;
+        this.listUser = listUser;
     }
 
     public Message() {
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getMsg() {
-
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     public MessageType getType() {
@@ -66,44 +45,59 @@ public class Message implements Serializable {
         this.type = type;
     }
 
-    public ArrayList<User> getUserlist() {
-        return list;
-    }
-
-    public void setUserlist(HashMap<String, User> userList) {
-        this.list = new ArrayList<>(userList.values());
-    }
-
-    public void setOnlineCount(int count){
-        this.count = count;
-    }
-
-    public int getOnlineCount(){
-        return this.count;
-    }
-
-    public void setPicture(byte[] picture) {
-        this.picture = picture;
-    }
-
-
-    public ArrayList<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(ArrayList<User> users) {
-        this.users = users;
+    public Status getStatus() {
+        return status;
     }
 
     public void setStatus(Status status) {
         this.status = status;
     }
 
-    public Status getStatus() {
-        return status;
+    public User getUser() {
+        return user;
     }
 
-    public void setVoiceMsg(byte[] voiceMsg) {
-        this.voiceMsg = voiceMsg;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getVoiceUrl() {
+        return voiceUrl;
+    }
+
+    public void setVoiceUrl(String voiceUrl) {
+        this.voiceUrl = voiceUrl;
+    }
+
+    public ArrayList<User> getListUser() {
+        return listUser;
+    }
+
+    public void setListUser(ArrayList<User> listUser) {
+        this.listUser = listUser;
+    }
+
+    public List<Message> getListMess() {
+        return listMess;
+    }
+
+    public void setListMess(List<Message> listMess) {
+        this.listMess = listMess;
     }
 }

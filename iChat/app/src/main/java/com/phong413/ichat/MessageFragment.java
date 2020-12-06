@@ -1,7 +1,6 @@
 package com.phong413.ichat;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -10,18 +9,25 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.SystemClock;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.messages.Message;
 import com.messages.MessageType;
+import com.messages.Status;
 import com.phong413.ichat.databinding.FragmentMessageBinding;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executors;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MessageFragment extends Fragment implements MessageView {
 
@@ -52,7 +58,7 @@ public class MessageFragment extends Fragment implements MessageView {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ListMessageAdapter adapter = new ListMessageAdapter();
+        ListMessageAdapter adapter = new ListMessageAdapter(requireContext());
         binding.listMessage.setAdapter(adapter);
 
         binding.btnSend.setOnClickListener(v -> {
@@ -76,6 +82,12 @@ public class MessageFragment extends Fragment implements MessageView {
         });
 
         adapter.updateListMessage(ChatThread.getInstance().getListMessage());
+
+//        binding.avatar.setImageURI(Uri.parse("http://" + ChatThread.getInstance().getHost() + ":8080/ichat" + ChatThread.getInstance().getAccount().getAvatarUrl()));
+
+        Glide.with(this)
+                .load("http://" + ChatThread.getInstance().getHost() + ":8080/ichat" + ChatThread.getInstance().getAccount().getAvatarUrl())
+                .into(binding.avatar);
     }
 
     @Override
@@ -95,20 +107,41 @@ public class MessageFragment extends Fragment implements MessageView {
             if (data != null) {
                 Uri imageUri = data.getData();
                 if (imageUri != null) {
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), imageUri);
-                        Executors.newSingleThreadExecutor().submit(() -> {
-                            Bitmap resizeBitmap = BitmapUtils.resizeBitmap(bitmap, bitmap.getWidth() / 20, bitmap.getWidth() / 20);
-                            byte[] img = BitmapUtils.bitmapToByte(resizeBitmap);
-                            Message mess = new MessageBuilder()
-                                    .setMessageType(MessageType.IMAGE)
-                                    .setImageMessage(img)
+                    Executors.newSingleThreadExecutor().submit(() -> {
+                        try {
+                            OkHttpClient client = new OkHttpClient.Builder()
                                     .build();
-                            messageController.sendMessage(mess);
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+
+                            InputStreamRequestBody avatarBody = new InputStreamRequestBody(
+                                    MediaType.parse("image"),
+                                    requireContext().getContentResolver(),
+                                    imageUri
+                            );
+
+                            RequestBody body = new  MultipartBody.Builder()
+                                    .addFormDataPart("image", "IMG_" + System.currentTimeMillis() + ".jpeg", avatarBody)
+                                    .build();
+
+                            Request req = new Request.Builder()
+                                    .url("http://" + "192.168.1.56" + ":8080/ichat/upload")
+                                    .post(body)
+                                    .build();
+                            Response resp = client.newCall(req).execute();
+                            int code = resp.code();
+                            if (code == 200) {
+                                String link = resp.body().string();
+                                ChatThread.getInstance().sendMessage(
+                                        new MessageBuilder()
+                                                .setStatus(Status.ONLINE)
+                                                .setMessageType(MessageType.IMAGE)
+                                                .setImageUrl(link)
+                                                .build()
+                                );
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
             }
         }

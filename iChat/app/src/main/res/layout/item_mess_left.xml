@@ -20,8 +20,6 @@
     <ImageView
         android:id="@+id/image"
         android:scaleType="fitCenter"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:maxWidth="100dp"
-        android:maxHeight="100dp"/>
+        android:layout_height="100dp"
+        android:layout_width="100dp" />
 </LinearLayout>

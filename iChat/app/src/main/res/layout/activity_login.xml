@@ -20,6 +20,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/login"
         android:padding="10dp"
         android:orientation="vertical"
         android:layout_centerInParent="true"
@@ -31,35 +32,34 @@
             android:text="@string/app_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/host"
+                android:hint="@string/host"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username"
+                android:hint="@string/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/host"
-            android:hint="@string/host"
+            android:id="@+id/password"
+            android:inputType="textPassword"
+            android:hint="@string/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-        <com.google.android.material.textfield.TextInputEditText
-            android:inputType="number"
-            android:id="@+id/port"
-            android:hint="@string/port"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/username"
-            android:hint="@string/username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:scaleType="centerCrop"
-            android:id="@+id/img_avatar"
-            android:layout_gravity="center"
-            android:padding="10dp"
-            android:src="@drawable/ic_baseline_image_24"
-            android:layout_width="100dp"
-            android:layout_height="100dp"/>
-        <TextView
-            android:layout_gravity="center"
-            android:text="@string/avatar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
@@ -72,4 +72,18 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center" />
+
+    <TextView
+        android:id="@+id/btn_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login"
+        android:layout_alignEnd="@id/login"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="?android:selectableItemBackground"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/register" />
 </RelativeLayout>

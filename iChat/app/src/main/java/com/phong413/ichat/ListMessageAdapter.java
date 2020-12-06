@@ -1,13 +1,18 @@
 package com.phong413.ichat;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.messages.Message;
 import com.phong413.ichat.databinding.ItemMessLeftBinding;
 import com.phong413.ichat.databinding.ItemMessRightBinding;
@@ -22,6 +27,12 @@ public class ListMessageAdapter extends RecyclerView.Adapter<ListMessageAdapter.
     private static final int TYPE_OTHER = 2;
 
     private ArrayList<Message> listMessage = new ArrayList<>();
+
+    private Context context;
+
+    public ListMessageAdapter(Context context) {
+        this.context = context;
+    }
 
     @NonNull
     @Override
@@ -53,7 +64,10 @@ public class ListMessageAdapter extends RecyclerView.Adapter<ListMessageAdapter.
 
     @Override
     public int getItemViewType(int position) {
-        if (listMessage.get(position).getName().equals(ChatThread.getInstance().getUsername())) {
+        if (listMessage.get(position).getUser() == null) {
+            return TYPE_OTHER;
+        }
+        if (listMessage.get(position).getUser().getUsername().equals(ChatThread.getInstance().getUser().getUsername())) {
             return TYPE_USER;
         } else {
             return TYPE_OTHER;
@@ -80,22 +94,30 @@ public class ListMessageAdapter extends RecyclerView.Adapter<ListMessageAdapter.
         }
 
         public void bind(Message m) {
-            binding.message.setText(m.getMsg());
-            Executors.newSingleThreadExecutor().submit(() -> {
-                Bitmap img = BitmapUtils.bitMapFromByte(m.getPicture());
-                binding.getRoot().post(() -> {
-                    binding.avatar.setImageBitmap(img);
-                });
+            binding.message.setText(m.getMessage());
+            binding.getRoot().post(() -> {
+                if (m.getUser() != null) {
+                    Glide.with(binding.avatar)
+                            .load(LinkUtils.BASE_URL + m.getUser().getAvatarUrl())
+                            .into(binding.avatar);
+                }
 
-                byte[] imgMsg = m.getImgMsg();
-                if (imgMsg != null) {
-                    Bitmap b = BitmapUtils.bitMapFromByte(imgMsg);
-                    binding.image.setImageBitmap(b);
+                String imgUrl = m.getImageUrl();
+                if (imgUrl != null) {
+                    Glide.with(binding.image)
+                            .load(LinkUtils.BASE_URL + imgUrl)
+                            .into(binding.image);
                     binding.image.setVisibility(View.VISIBLE);
                 } else {
                     binding.image.setImageBitmap(null);
                     binding.image.setVisibility(View.GONE);
                 }
+
+                binding.image.setOnClickListener(v -> {
+                    Intent intent = new Intent(context, ViewImageActivity.class);
+                    intent.setData(Uri.parse(LinkUtils.BASE_URL + imgUrl));
+                    context.startActivity(intent);
+                });
             });
         }
     }
@@ -109,21 +131,30 @@ public class ListMessageAdapter extends RecyclerView.Adapter<ListMessageAdapter.
         }
 
         public void bind(Message m) {
-            binding.message.setText(m.getMsg());
-            Executors.newSingleThreadExecutor().submit(() -> {
-                Bitmap img = BitmapUtils.bitMapFromByte(m.getPicture());
-                binding.getRoot().post(() -> {
-                    binding.avatar.setImageBitmap(img);
-                });
-                byte[] imgMsg = m.getImgMsg();
-                if (imgMsg != null) {
-                    Bitmap b = BitmapUtils.bitMapFromByte(imgMsg);
-                    binding.image.setImageBitmap(b);
+            binding.message.setText(m.getMessage());
+            binding.getRoot().post(() -> {
+                if (m.getUser() != null) {
+                    Glide.with(binding.avatar)
+                            .load(LinkUtils.BASE_URL + m.getUser().getAvatarUrl())
+                            .into(binding.avatar);
+                }
+
+                String imgUrl = m.getImageUrl();
+                if (imgUrl != null) {
+                    Glide.with(binding.image)
+                            .load(LinkUtils.BASE_URL + imgUrl)
+                            .into(binding.image);
                     binding.image.setVisibility(View.VISIBLE);
                 } else {
                     binding.image.setImageBitmap(null);
                     binding.image.setVisibility(View.GONE);
                 }
+
+                binding.image.setOnClickListener(v -> {
+                    Intent intent = new Intent(context, ViewImageActivity.class);
+                    intent.setData(Uri.parse(LinkUtils.BASE_URL + imgUrl));
+                    context.startActivity(intent);
+                });
             });
         }
     }

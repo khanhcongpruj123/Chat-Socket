@@ -1,7 +1,5 @@
 package com.phong413.ichat;
 
-import android.graphics.Bitmap;
-
 import com.messages.Message;
 import com.messages.MessageType;
 import com.messages.Status;
@@ -9,7 +7,7 @@ import com.messages.Status;
 public class MessageBuilder {
 
     private String message;
-    private byte[] imgMsg;
+    private String imgUrl;
     private MessageType type;
     private Status status = Status.ONLINE;
 
@@ -18,8 +16,8 @@ public class MessageBuilder {
         return this;
     }
 
-    MessageBuilder setImageMessage(byte[] img) {
-        this.imgMsg = img;
+    MessageBuilder setImageUrl(String img) {
+        this.imgUrl = img;
         return this;
     }
 
@@ -35,12 +33,11 @@ public class MessageBuilder {
 
     Message build() {
         Message mess = new Message();
-        mess.setName(ChatThread.getInstance().getUsername());
-        mess.setPicture(ChatThread.getInstance().getAvatar());
-        mess.setMsg(this.message);
+        mess.setUser(ChatThread.getInstance().getUser());
+        mess.setMessage(this.message);
         mess.setType(this.type);
         mess.setStatus(this.status);
-        mess.setImgMsg(this.imgMsg);
+        mess.setImageUrl(this.imgUrl);
         return mess;
     }
 }

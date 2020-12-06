@@ -22,8 +22,8 @@ public class ContactController implements ChatListener{
         Log.d("AppLog", "Cap nhat danh sach contact");
         if (listMessage != null && !listMessage.isEmpty()) {
             Message mess = listMessage.get(listMessage.size() - 1);
-            Log.d("AppLog", "Danh sach contact: " + mess.getUsers().size());
-            updateListContact(mess.getUsers());
+            Log.d("AppLog", "Danh sach contact: " + mess.getListUser().size());
+            updateListContact(mess.getListUser());
         }
     }
 

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.messages.User;
 import com.phong413.ichat.databinding.ItemContactBinding;
 
@@ -29,11 +30,11 @@ public class ListContactAdapter extends RecyclerView.Adapter<ListContactAdapter.
 
         public void bind(User u) {
             Executors.newSingleThreadExecutor().submit(() -> {
-               byte[] imgByte = u.getPicture();
-               Bitmap img = BitmapUtils.bitMapFromByte(imgByte);
                binding.getRoot().post(() -> {
-                   binding.img.setImageBitmap(img);
-                   binding.name.setText(u.getName());
+                   Glide.with(binding.img)
+                           .load(LinkUtils.BASE_URL + u.getAvatarUrl())
+                           .into(binding.img);
+                   binding.name.setText(u.getUsername());
                    String status;
                    switch (u.getStatus()) {
                        case BUSY:
