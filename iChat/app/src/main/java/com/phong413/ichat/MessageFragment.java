@@ -123,7 +123,7 @@ public class MessageFragment extends Fragment implements MessageView {
                                     .build();
 
                             Request req = new Request.Builder()
-                                    .url("http://" + "192.168.1.56" + ":8080/ichat/upload")
+                                    .url("http://" + "192.168.43.173" + ":8080/ichat/upload")
                                     .post(body)
                                     .build();
                             Response resp = client.newCall(req).execute();

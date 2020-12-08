@@ -51,7 +51,7 @@ public class RegisterController {
                         .build();
 
                 Request req = new Request.Builder()
-                        .url("http://" + "192.168.1.56" + ":8080/ichat/register")
+                        .url("http://" + "192.168.43.173" + ":8080/ichat/register")
                         .post(body)
                         .build();
                 Response resp = client.newCall(req).execute();
